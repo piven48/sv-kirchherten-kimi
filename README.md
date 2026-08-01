@@ -1,1 +1,1 @@
-# SV Kirch-Grottenherten Redesign
+# SV Kirch-Grottenherten
