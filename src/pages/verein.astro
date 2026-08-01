@@ -1,0 +1,68 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+
+const page = (await getEntry('pages', 'verein'))!.data;
+const PAGE_FILE = 'src/content/pages/verein.yaml';
+
+const vorstand = [
+  { role: '1. Vorsitzender', name: 'David Müsch' },
+  { role: '1. Kassierer', name: 'Tobias Behr' },
+  { role: '1. Geschäftsführer', name: 'Daniel Balkow' },
+  { role: '2. Kassierer', name: 'Stefan Cremer' },
+  { role: '1. Beisitzer', name: 'Frank Hamacher' },
+  { role: 'Sportliche Leitung', name: 'Volker Wawrzinossek' },
+  { role: '2. Beisitzer', name: 'Uwe Stark' },
+  { role: '2. Geschäftsführer', name: 'Frank Kunisch' },
+  { role: '3. Beisitzer', name: 'Caroline Rzesnitzek' },
+];
+---
+
+<Layout title={page.title} description={page.description}>
+  <script type="application/json" data-edit-source={PAGE_FILE} set:html={JSON.stringify({ verein: page })} />
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h1 class="display-lg">Der Verein</h1>
+        <p>Tradition, Gemeinschaft und Leidenschaft für den Fußball seit 1945.</p>
+      </div>
+
+      <!-- Vorstand -->
+      <h2 class="display-md mt-10 mb-6" data-edit={`${PAGE_FILE}::vorstandTitle`}>{page.vorstandTitle}</h2>
+      <p class="mb-8" data-edit={`${PAGE_FILE}::vorstandIntro`}>{page.vorstandIntro}</p>
+      <div class="team-grid reveal">
+        {vorstand.map(person => (
+          <div class="team-card">
+            <div class="team-role">{person.role}</div>
+            <div class="team-name">{person.name}</div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Sportplatz-Team -->
+      <h2 class="display-md mt-16 mb-6" data-edit={`${PAGE_FILE}::sportplatzTitle`}>{page.sportplatzTitle}</h2>
+      <p data-edit={`${PAGE_FILE}::sportplatzIntro`}>{page.sportplatzIntro}</p>
+
+      <!-- Jugendvorstand -->
+      <h2 class="display-md mt-16 mb-6" data-edit={`${PAGE_FILE}::jugendTitle`}>{page.jugendTitle}</h2>
+      <p data-edit={`${PAGE_FILE}::jugendIntro`}>{page.jugendIntro}</p>
+      <div class="team-grid reveal">
+        <div class="team-card">
+          <div class="team-role">Jugendleiter (kommissarisch)</div>
+          <div class="team-name">Tobias Behr</div>
+        </div>
+      </div>
+
+      <!-- Satzung -->
+      <h2 class="display-md mt-16 mb-6" data-edit={`${PAGE_FILE}::satzungTitle`}>{page.satzungTitle}</h2>
+      <p class="mb-6" data-edit={`${PAGE_FILE}::satzungIntro`}>{page.satzungIntro}</p>
+      <a href="https://sv-kirchherten.de/wp-content/uploads/2020/10/Satzung.pdf" target="_blank" rel="noopener" class="btn btn-primary">Satzung herunterladen (PDF)</a>
+
+      <!-- Vereinslied -->
+      <h2 class="display-md mt-16 mb-6" data-edit={`${PAGE_FILE}::liedTitle`}>{page.liedTitle}</h2>
+      <p class="mb-6" data-edit={`${PAGE_FILE}::liedIntro`}>{page.liedIntro}</p>
+      <div class="lyrics reveal" data-edit={`${PAGE_FILE}::liedText`}>{page.liedText}</div>
+    </div>
+  </section>
+</Layout>

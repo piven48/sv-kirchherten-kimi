@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+
+const page = (await getEntry('pages', 'kontakt'))!.data;
+const PAGE_FILE = 'src/content/pages/kontakt.yaml';
+
+const contacts = [
+  { role: '1. Vorsitzender', name: 'David Müsch', email: 'muesch.david@outlook.de' },
+  { role: '1. Geschäftsführer', name: 'Daniel Balkow', email: 'balkowdaniel@gmx.de' },
+  { role: '1. Kassierer', name: 'Tobias Behr', email: 'tobias-behr@gmx.de' },
+  { role: 'Sportliche Leitung', name: 'Volker Wawrzinossek', email: 'volkerwawa@gmail.com' },
+  { role: 'Jugendleiter (kommissarisch)', name: 'Tobias Behr', email: 'tobias-behr@gmx.de' },
+];
+---
+
+<Layout title={page.title} description={page.description}>
+  <script type="application/json" data-edit-source={PAGE_FILE} set:html={JSON.stringify({ kontakt: page })} />
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h1 class="display-lg">Kontakt & Anfahrt</h1>
+        <p data-edit={`${PAGE_FILE}::intro`}>{page.intro}</p>
+      </div>
+
+      <div class="grid-2" style="align-items: start;">
+        <div>
+          <h2 class="heading mb-6">Ansprechpartner</h2>
+          <div class="contact-list">
+            {contacts.map(c => (
+              <div class="contact-item reveal">
+                <span class="contact-role">{c.role}</span>
+                <span class="contact-name">{c.name}</span>
+                <a href={`mailto:${c.email}`} class="contact-email">{c.email}</a>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h2 class="heading mb-6" data-edit={`${PAGE_FILE}::anfahrtTitle`}>{page.anfahrtTitle}</h2>
+          <p class="mb-6" data-edit={`${PAGE_FILE}::anfahrtText`}>{page.anfahrtText}</p>
+          <a href={page.anfahrtUrl} target="_blank" rel="noopener" class="btn btn-primary mb-8">Route planen</a>
+          <iframe
+            class="map-embed"
+            src="https://www.google.com/maps?q=Zaunstraße+24,+50181+Bedburg&output=embed"
+            title="Anfahrt zum Sportplatz"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

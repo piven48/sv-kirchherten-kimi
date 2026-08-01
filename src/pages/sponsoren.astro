@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+
+const page = (await getEntry('pages', 'sponsoren'))!.data;
+const PAGE_FILE = 'src/content/pages/sponsoren.yaml';
+---
+
+<Layout title={page.title} description={page.description}>
+  <script type="application/json" data-edit-source={PAGE_FILE} set:html={JSON.stringify({ sponsoren: page })} />
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h1 class="display-lg">Sponsoren</h1>
+        <p data-edit={`${PAGE_FILE}::intro`}>{page.intro}</p>
+      </div>
+
+      <div class="grid-4">
+        {page.sponsors.map((sponsor: {name: string, url: string}) => (
+          <a
+            href={sponsor.url || '#'}
+            target={sponsor.url ? '_blank' : undefined}
+            rel={sponsor.url ? 'noopener' : undefined}
+            class="sponsor-item reveal"
+          >
+            {sponsor.name}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

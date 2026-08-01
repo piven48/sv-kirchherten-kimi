@@ -1,0 +1,79 @@
+---
+import { getEntry } from 'astro:content';
+const settings = (await getEntry('settings', 'site'))!.data;
+---
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard-Login – {settings.businessName}</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="/assets/css/dashboard.css">
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; background: var(--dash-paper); color: var(--dash-ink); }
+  main { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+  .login-card {
+    background: var(--dash-white); border: 1px solid var(--dash-border); border-radius: 14px;
+    padding: 2rem; max-width: 24rem; width: 100%;
+  }
+  .login-card h1 { font-size: 1.4rem; margin: 0 0 0.25rem; }
+  .login-card p { color: var(--dash-ink-soft); margin: 0 0 1.25rem; font-size: 0.9rem; }
+  .form-field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
+  .form-field label { font-size: 0.85rem; font-weight: 700; }
+  .form-field input {
+    font: inherit; padding: 0.6em 0.7em; border: 1px solid var(--dash-border); border-radius: 6px;
+  }
+  button[type="submit"] {
+    width: 100%; padding: 0.7em; border: none; border-radius: 6px;
+    background: var(--dash-accent); color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+  }
+  button[type="submit"]:hover { background: var(--dash-accent-hover); }
+  button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
+  #login-status { color: #b3261e; font-size: 0.85rem; min-height: 1.2em; margin: 0.75rem 0 0; }
+</style>
+</head>
+<body>
+<main>
+  <div class="login-card">
+    <h1>Dashboard-Login</h1>
+    <p>Nur für die Verwaltung von {settings.businessName}.</p>
+    <form id="login-form" novalidate>
+      <div class="form-field">
+        <label for="password">Passwort</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password" autofocus>
+      </div>
+      <button type="submit">Anmelden</button>
+      <p id="login-status" aria-live="polite"></p>
+    </form>
+  </div>
+</main>
+<script is:inline>
+  document.getElementById('login-form').addEventListener('submit', async function (event) {
+    event.preventDefault();
+    var status = document.getElementById('login-status');
+    var btn = event.target.querySelector('button[type="submit"]');
+    var password = document.getElementById('password').value;
+    btn.disabled = true;
+    status.textContent = '';
+    try {
+      var res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password }),
+      });
+      if (res.ok) {
+        window.location.href = '/';
+      } else {
+        var data = await res.json().catch(function () { return {}; });
+        status.textContent = data.error || 'Anmeldung fehlgeschlagen.';
+        btn.disabled = false;
+      }
+    } catch (err) {
+      status.textContent = 'Verbindung fehlgeschlagen. Bitte erneut versuchen.';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

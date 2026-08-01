@@ -1,0 +1,132 @@
+---
+import { getEntry } from 'astro:content';
+import { BUILD_TIME, BUILD_ID } from '../lib/buildId';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const settingsEntry = (await getEntry('settings', 'site'))!;
+const settings = settingsEntry.data;
+const SETTINGS_FILE = 'src/content/settings/site.yaml';
+
+function toCssVarName(key: string) {
+  return '--' + key.replace(/([A-Z])/g, '-$1').toLowerCase();
+}
+const themeCss = Object.entries(settings.theme)
+  .map(([key, value]) => `${toCssVarName(key)}: ${value};`)
+  .join('\n    ');
+
+const navItems = [
+  { href: '/', label: 'Startseite' },
+  { href: '/mannschaften/', label: 'Mannschaften' },
+  { href: '/verein/', label: 'Verein' },
+  { href: '/mitgliedschaft/', label: 'Mitgliedschaft' },
+  { href: '/sponsoren/', label: 'Sponsoren' },
+  { href: '/kontakt/', label: 'Kontakt' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<!DOCTYPE html>
+<html lang="de" class="no-js">
+<script>document.documentElement.classList.replace("no-js","js");</script>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<meta name="description" content={description}>
+<meta name="build-time" content={BUILD_TIME}>
+<link rel="stylesheet" href={`/assets/css/styles.css?v=${BUILD_ID}`}>
+<link rel="stylesheet" href={`/assets/css/dashboard.css?v=${BUILD_ID}`}>
+<style set:html={`:root {\n    ${themeCss}\n  }`} />
+</head>
+<body>
+<script type="application/json" data-edit-source={SETTINGS_FILE} set:html={JSON.stringify({ site: settings })} />
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo" aria-label="Zur Startseite">
+      <img src="/uploads/logo.png" alt="" width="48" height="48" loading="eager">
+      <span class="logo-text">SV Kirch-Grottenherten</span>
+    </a>
+    <nav class="main-nav" aria-label="Hauptnavigation">
+      <ul>
+        {navItems.map(item => (
+          <li>
+            <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <button class="nav-toggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+  <ul>
+    {navItems.map(item => (
+      <li>
+        <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>{item.label}</a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<main id="main">
+  <slot />
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="/uploads/logo.png" alt="" width="40" height="40" loading="lazy">
+          <span>SV Kirch-Grottenherten</span>
+        </div>
+        <p class="body-lg" style="max-width: 36ch;">
+          Spvgg. Kirch-Grottenherten 1945 e.V.<br>
+          {settings.address}<br>
+          {settings.city}
+        </p>
+        <p class="mt-6" style="font-size: 0.9375rem;">
+          <a href={`tel:${settings.phoneHref}`} style="display:block; margin-bottom: 0.25rem;">{settings.phone}</a>
+          <a href={`mailto:${settings.email}`}>{settings.email}</a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <h3>Navigation</h3>
+        <ul>
+          {navItems.map(item => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Rechtliches</h3>
+        <ul>
+          <li><a href="/impressum/">Impressum</a></li>
+          <li><a href="/datenschutz/">Datenschutz</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© {new Date().getFullYear()} Spvgg. Kirch-Grottenherten 1945 e.V.</span>
+      <span>Mitglied im Fußballkreis Rhein-Erft</span>
+    </div>
+  </div>
+</footer>
+
+<script is:inline src={`/assets/js/main.js?v=${BUILD_ID}`}></script>
+<script is:inline src={`/assets/js/dashboard.js?v=${BUILD_ID}`}></script>
+</body>
+</html>

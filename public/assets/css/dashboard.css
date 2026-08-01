@@ -1,0 +1,205 @@
+/* Inline-Dashboard: nur aktiv, wenn eingeloggt (dashboard.js setzt
+   body.dash-active). Bewusst als eigene Datei, damit sie 1:1 in
+   anderen Projekten wiederverwendbar bleibt. Die eigene Chrome-Optik
+   (Toolbar, Buttons, Modals) nutzt ausschließlich ihre eigenen
+   --dash-* Variablen unten und hängt an keiner Stelle von den
+   Marken-Variablen der jeweiligen Website ab. */
+
+:root {
+  --dash-ink: #1f2417;
+  --dash-ink-soft: #5b6358;
+  --dash-paper: #faf9f5;
+  --dash-white: #ffffff;
+  --dash-border: #ddd;
+  --dash-accent: #4b7a2f;
+  --dash-accent-hover: #5c9138;
+  --dash-accent-soft: rgba(75, 122, 47, 0.08);
+  --dash-accent-100: #e3ecdb;
+  --dash-warm: #b98b5e;
+  --dash-warm-soft: rgba(185, 139, 94, 0.08);
+}
+
+body.dash-active { padding-bottom: 64px; }
+
+.dash-editable {
+  outline: 1.5px dashed transparent;
+  outline-offset: 3px;
+  border-radius: 3px;
+  transition: outline-color 120ms ease, background-color 120ms ease;
+  cursor: text;
+}
+.dash-editable:hover {
+  outline-color: var(--dash-warm);
+  background-color: var(--dash-warm-soft);
+}
+.dash-editing {
+  outline: 1.5px solid var(--dash-accent) !important;
+  background-color: var(--dash-accent-soft) !important;
+}
+
+.dash-image-wrap { position: relative; display: inline-block; width: 100%; }
+.dash-image-drop {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: rgba(35, 41, 30, 0);
+  opacity: 0;
+  transition: opacity 150ms ease, background 150ms ease;
+  cursor: pointer;
+  border-radius: inherit;
+}
+.dash-image-wrap:hover .dash-image-drop,
+.dash-image-wrap.dash-image-dragover .dash-image-drop {
+  opacity: 1;
+  background: rgba(35, 41, 30, 0.55);
+}
+.dash-image-wrap.dash-image-dragover .dash-image-drop {
+  background: rgba(111, 165, 36, 0.55);
+}
+.dash-image-drop-text {
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+.dash-image-url-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  padding: 0.4em 0.8em;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.dash-image-url-btn:hover { background: rgba(255, 255, 255, 0.3); }
+.dash-visually-hidden-input { display: none; }
+.dash-image-status {
+  font-size: 0.8rem;
+  color: var(--dash-accent);
+  margin: 0.4rem 0 0;
+}
+
+.dash-toolbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--dash-ink);
+  color: #fff;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.2);
+  flex-wrap: wrap;
+}
+.dash-toolbar-label {
+  font-weight: 620;
+  margin-right: 0.5rem;
+}
+.dash-toolbar-spacer { flex: 1; }
+.dash-status { font-size: 0.85rem; opacity: 0.85; }
+
+.dash-btn {
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.55em 1.1em;
+  border-radius: 6px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: background 120ms ease, opacity 120ms ease;
+}
+.dash-btn:hover { background: rgba(255,255,255,0.1); }
+.dash-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.dash-btn-primary { background: var(--dash-accent); border-color: var(--dash-accent); color: #fff; }
+.dash-btn-primary:hover { background: var(--dash-accent-hover); }
+.dash-btn-ghost { border-color: transparent; }
+
+.dash-overlay {
+  position: fixed; inset: 0; z-index: 1100;
+  background: rgba(20, 24, 15, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.dash-modal {
+  background: var(--dash-paper);
+  color: var(--dash-ink);
+  border-radius: 14px;
+  padding: 1.75rem;
+  max-width: 32rem;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.dash-modal-wide { max-width: 42rem; }
+.dash-modal h2 {
+  color: var(--dash-accent);
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+}
+.dash-hint { font-size: 0.85rem; color: var(--dash-ink-soft); margin-bottom: 1rem; }
+
+.dash-color-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.dash-color-row {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.85rem;
+  border: 1px solid var(--dash-border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+}
+.dash-color-row input[type="color"] {
+  width: 34px; height: 34px; border: none; border-radius: 6px; padding: 0; cursor: pointer; flex: none;
+}
+.dash-color-text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.dash-color-text strong { font-size: 0.88rem; }
+.dash-color-text small { color: var(--dash-ink-soft); font-size: 0.76rem; }
+.dash-color-preview { flex: none; min-width: 72px; display: flex; justify-content: flex-end; }
+
+.dash-modal-actions { display: flex; gap: 0.6rem; margin-top: 1.25rem; justify-content: flex-end; }
+
+.dash-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.dash-list-item {
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+  padding: 0.9rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.dash-list-item-fields { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+.dash-list-item-fields label { display: flex; flex-direction: column; font-size: 0.8rem; font-weight: 700; gap: 0.25rem; }
+.dash-list-item-fields input,
+.dash-list-item-fields textarea {
+  font: inherit; font-size: 0.9rem; font-weight: 400;
+  padding: 0.5em 0.6em;
+  border: 1px solid var(--dash-border);
+  border-radius: 6px;
+  background: var(--dash-white);
+  color: var(--dash-ink);
+}
+.dash-list-item-actions { display: flex; flex-direction: column; gap: 0.35rem; flex: none; }
+.dash-icon-btn {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  border: 1px solid var(--dash-border);
+  background: var(--dash-white);
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.dash-icon-btn:hover { background: var(--dash-accent-100); }
+.dash-icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.dash-icon-btn-danger:hover { background: #f6dede; }
+
+@media (max-width: 640px) {
+  .dash-toolbar { justify-content: center; }
+  .dash-toolbar-spacer { display: none; }
+  .dash-list-item { flex-direction: column; }
+  .dash-list-item-actions { flex-direction: row; }
+}

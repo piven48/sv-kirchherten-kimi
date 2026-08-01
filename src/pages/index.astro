@@ -1,0 +1,143 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+
+const page = (await getEntry('pages', 'index'))!.data;
+const PAGE_FILE = 'src/content/pages/index.yaml';
+---
+
+<Layout title={page.title} description={page.description}>
+  <script type="application/json" data-edit-source={PAGE_FILE} set:html={JSON.stringify({ index: page })} />
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="display-xl hero-title" data-edit={`${PAGE_FILE}::heroHeadline`}>
+        {page.heroHeadline}
+      </h1>
+      <p class="body-lg" data-edit={`${PAGE_FILE}::heroText`}>
+        {page.heroText}
+      </p>
+      <div class="hero-actions">
+        <a href="/mitgliedschaft/" class="btn btn-primary">Mitglied werden</a>
+      </div>
+    </div>
+    <div class="hero-media">
+      <img src="/uploads/vereinsfoto.jpeg" alt="Mannschaftsfoto des SV Kirch-Grottenherten" loading="eager" width="1450" height="2030">
+    </div>
+  </section>
+
+  <!-- Info-Bar -->
+  <div class="info-bar">
+    <div class="container info-bar-inner">
+      <span class="caption" style="color: rgba(255,255,255,0.7);">Aktuelles</span>
+      <a href="https://www.fupa.net/club/sv-kirch-grottenherten" target="_blank" rel="noopener">FuPa-Profil →</a>
+      <a href="https://www.fupa.net/club/sv-kirch-grottenherten/team-1" target="_blank" rel="noopener">Spielplan 1. Mannschaft →</a>
+      <a href="https://www.fupa.net/club/sv-kirch-grottenherten/team-2" target="_blank" rel="noopener">Spielplan 2. Mannschaft →</a>
+      <a href="https://www.fupa.net/club/sv-kirch-grottenherten/tabelle" target="_blank" rel="noopener">Tabelle →</a>
+    </div>
+  </div>
+
+  <!-- Willkommen -->
+  <section class="section bg-surface big-year reveal">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="display-md" data-edit={`${PAGE_FILE}::welcomeTitle`}>{page.welcomeTitle}</h2>
+      </div>
+      <div class="grid-2" style="align-items: start;">
+        <p class="body-lg" data-edit={`${PAGE_FILE}::welcomeText`}>{page.welcomeText}</p>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <p>Wollen Sie die Fotos vom Training sehen? Oder vielleicht auch Fotos von den Spielen? Oder auch im Liveticker hautnah dabei sein?</p>
+          <div class="flex-wrap gap-4" style="margin-top: 0.5rem;">
+            <a href="http://bit.ly/facebook_kirchherten" target="_blank" rel="noopener" class="btn btn-secondary">Facebook</a>
+            <a href="http://bit.ly/insta_kirchherten" target="_blank" rel="noopener" class="btn btn-secondary">Instagram</a>
+            <a href="http://bit.ly/fupa_kirchherten" target="_blank" rel="noopener" class="btn btn-secondary">FuPa</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mannschaften -->
+  <section class="section reveal">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="display-md">Unsere Mannschaften</h2>
+        <p>Aktuelle Informationen zu Kader, Spielplänen und Tabellen finden Sie bei FuPa.</p>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="team-role">Senioren</div>
+          <h3 class="card-title">1. Mannschaft</h3>
+          <p class="mb-6">Alle aktuellen Daten zu unserer ersten Mannschaft: Kader, Tabelle, Spielplan und Liveticker.</p>
+          <a href="https://www.fupa.net/club/sv-kirch-grottenherten/team-1" target="_blank" rel="noopener" class="btn btn-primary">Zur 1. Mannschaft</a>
+        </div>
+        <div class="card">
+          <div class="team-role">Senioren</div>
+          <h3 class="card-title">2. Mannschaft</h3>
+          <p class="mb-6">Aktuelle Informationen zu unserer zweiten Mannschaft bei FuPa.</p>
+          <a href="https://www.fupa.net/club/sv-kirch-grottenherten/team-2" target="_blank" rel="noopener" class="btn btn-primary">Zur 2. Mannschaft</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vorstand -->
+  <section class="section bg-surface reveal">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="display-md">Vorstand</h2>
+        <p>Der Vorstand kümmert sich um alle organisatorischen Belange des Vereins.</p>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-role">1. Vorsitzender</div>
+          <div class="team-name">David Müsch</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">1. Geschäftsführer</div>
+          <div class="team-name">Daniel Balkow</div>
+        </div>
+        <div class="team-card">
+          <div class="team-role">Sportliche Leitung</div>
+          <div class="team-name">Volker Wawrzinossek</div>
+        </div>
+      </div>
+      <div class="text-center mt-10">
+        <a href="/verein/" class="btn btn-secondary">Gesamten Vorstand ansehen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sponsoren -->
+  <section class="section reveal">
+    <div class="container">
+      <div class="section-header text-center">
+        <h2 class="display-md">Unsere Sponsoren</h2>
+        <p>Wir bedanken uns herzlich bei allen Partnern, die uns tatkräftig unterstützen.</p>
+      </div>
+      <div class="grid-4">
+        <div class="sponsor-item">Volksbank Erft eG</div>
+        <div class="sponsor-item">Kreissparkasse Kaster</div>
+        <div class="sponsor-item">Bäckerei Boveleth</div>
+        <div class="sponsor-item">Dominikaner Apotheke</div>
+      </div>
+      <div class="text-center mt-10">
+        <a href="/sponsoren/" class="btn btn-secondary">Alle Sponsoren ansehen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section" style="background: var(--accent); color: #fff;">
+    <div class="container text-center reveal">
+      <h2 class="display-lg banner-title" data-edit={`${PAGE_FILE}::ctaTitle`}>{page.ctaTitle}</h2>
+      <p class="body-lg mt-6" style="color: rgba(255,255,255,0.9); max-width: 60ch; margin-inline: auto;" data-edit={`${PAGE_FILE}::ctaText`}>
+        {page.ctaText}
+      </p>
+      <div class="mt-8">
+        <a href="/mitgliedschaft/" class="btn btn-white">Zum Mitgliedsantrag</a>
+      </div>
+    </div>
+  </section>
+</Layout>

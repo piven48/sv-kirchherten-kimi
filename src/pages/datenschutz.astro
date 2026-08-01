@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+
+const page = (await getEntry('pages', 'datenschutz'))!.data;
+const PAGE_FILE = 'src/content/pages/datenschutz.yaml';
+---
+
+<Layout title={page.title} description={page.description}>
+  <script type="application/json" data-edit-source={PAGE_FILE} set:html={JSON.stringify({ datenschutz: page })} />
+
+  <section class="section">
+    <div class="container" style="max-width: 760px;">
+      <h1 class="display-lg mb-8">Datenschutzerklärung</h1>
+      <div class="body-lg" style="white-space: pre-line;" data-edit={`${PAGE_FILE}::content`}>
+        {page.content}
+      </div>
+    </div>
+  </section>
+</Layout>
